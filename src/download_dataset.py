@@ -4,7 +4,7 @@ from tqdm import tqdm
 from utils import download_images
 import random
 
-def download_dataset_images(csv_path, download_folder, num_images=25000):
+def download_dataset_images(csv_path, download_folder, num_images=25000, output_csv_name='processed_train.csv'):
     df = pd.read_csv(csv_path)
     
     image_links = df['image_link'].unique()
@@ -34,13 +34,23 @@ def download_dataset_images(csv_path, download_folder, num_images=25000):
         for link in list(missing_images)[:5]:
             print(link)
 
+    df['image_name'] = df['image_link'].apply(lambda x: os.path.basename(x))  # Extract image name from URL
+    downloaded_images_set = set(downloaded_images)
+
+    filtered_df = df[df['image_name'].apply(lambda x: os.path.splitext(x)[0] in downloaded_images_set)]
+
+    processed_csv_path = os.path.join(download_folder, output_csv_name)
+    filtered_df.to_csv(processed_csv_path, index=False)
+
+    print(f"Filtered data saved to {processed_csv_path}")
+
 
 train_csv_path = '../dataset/train.csv'
 train_download_folder = 'images/train/'
 
-download_dataset_images(train_csv_path, train_download_folder, num_images=25000)
+download_dataset_images(train_csv_path, train_download_folder, num_images=25000, output_csv_name='processed_train.csv')
 
 test_csv_path = '../dataset/test.csv'
 test_download_folder = 'images/test/'
 
-download_dataset_images(test_csv_path, test_download_folder, num_images=10000)
+download_dataset_images(test_csv_path, test_download_folder, num_images=10000, output_csv_name='processed_test.csv')
