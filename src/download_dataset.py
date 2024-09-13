@@ -14,10 +14,10 @@ def download_images_from_csv(csv_path, download_folder):
     
     print("Download complete!")
 
-train_csv_path = '../dataset/train.csv'
-train_download_folder = 'images/train/'
+# train_csv_path = '../dataset/train.csv'
+# train_download_folder = 'images/train/'
 
-download_images_from_csv(train_csv_path, train_download_folder)
+# download_images_from_csv(train_csv_path, train_download_folder)
 
 test_csv_path = '../dataset/test.csv'
 test_download_folder = 'images/test/'
