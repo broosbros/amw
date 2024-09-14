@@ -12,19 +12,12 @@ def downscale_image(image_path, output_path, target_resolution=(1500, 1500)):
     
     if scaling_factor < 1:
         new_dimensions = (int(w * scaling_factor), int(h * scaling_factor))
-        downscaled_img = cv2.resize(img, new_dimensions, interpolation=cv2.INTER_LANCZOS4)
+        downscaled_img = cv2.resize(img, new_dimensions, interpolation=cv2.INTER_AREA)
         
-        kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
-        sharpened_img = cv2.filter2D(downscaled_img, -1, kernel)
-        
-        lab = cv2.cvtColor(sharpened_img, cv2.COLOR_BGR2LAB)
-        l, a, b = cv2.split(lab)
-        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-        cl = clahe.apply(l)
-        enhanced_lab = cv2.merge((cl,a,b))
-        enhanced_img = cv2.cvtColor(enhanced_lab, cv2.COLOR_LAB2BGR)
+        enhanced_img = downscaled_img
     else:
         enhanced_img = img
+        print("Image is already at the target resolution or smaller")
 
     cv2.imwrite(output_path, enhanced_img, [cv2.IMWRITE_JPEG_QUALITY, 95])
 
@@ -32,5 +25,6 @@ def downscale_image(image_path, output_path, target_resolution=(1500, 1500)):
 
 # Example usage:
 # downscale_image('path/to/input/image.jpg', 'path/to/output/image.jpg')
+downscale_image("../images/41-NCxNuBxL.jpg", "test.jpg")
 
 
